@@ -11,6 +11,17 @@
 #define TIMEOUT     1000
 #define PROMISC     0
 #define MAXCOUNT    0
+int length;
+void print_data(const u_char *data){
+	printf("Data :\n");
+	int cnt=1;
+	while(length){
+		printf("%02x  " ,*data++);
+		if(cnt%16==0) printf("\n");
+		cnt++;
+		length--;
+	}	
+}
 
 void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
 {
@@ -19,8 +30,8 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
     
     	printf("===============packet info================\n");
 	
-	
-	printf("Length: %d\n\n", h->len);
+	length=h->len;
+	printf("Length: %d\n\n", length);
     	printf("source mac address: ");
     	for (i=0; i<ETH_ALEN-1; i++)
     	{
@@ -62,10 +73,7 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
 	printf("Source Port : %d\n\n", ntohs(tcph->source));
 	printf("Destination Port : %d\n\n", ntohs(tcph->dest));
 
-	printf("Data :\n");
-	int cnt=1;
-	
-	
+	print_data(p+sizeof(struct ether_header)+sizeof(struct ip)+sizeof(struct tcphdr)+12);
 	printf("==========================================\n\n");
 }
 
