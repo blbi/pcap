@@ -20,7 +20,8 @@ void print_data(const u_char *data){
 		if(cnt%16==0) printf("\n");
 		cnt++;
 		length--;
-	}	
+	}
+	printf("\n\n");	
 }
 
 void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
@@ -28,18 +29,18 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
     	int i;
     	struct ether_header *eh = (struct ether_header *)p;
     
-    	printf("===============packet info================\n");
+    	printf("========================packet info==========================\n");
 	
 	length=h->len;
 	printf("Length: %d\n\n", length);
-    	printf("source mac address: ");
+    	printf("Source mac address: ");
     	for (i=0; i<ETH_ALEN-1; i++)
     	{
         	printf ("%02x:", eh->ether_shost[i]);
     	}
 	printf("%02x\n\n", eh->ether_shost[ETH_ALEN-1]);
    // printf (" -> ");
-    	printf("destination mac address: ");
+    	printf("Destination mac address: ");
     	for (i=0; i<ETH_ALEN-1; i++)
     	{
         	printf ("%02x:", eh->ether_dhost[i]);
@@ -56,11 +57,11 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
 //	printf ("%s\n",ether_type);
 		char srcIP[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &(iph->ip_src), srcIP, INET_ADDRSTRLEN);
-		printf("Src ip Address : %s\n\n", srcIP);
+		printf("Source Ip Address : %s\n\n", srcIP);
 		
 		char dstIP[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &(iph->ip_dst), dstIP, INET_ADDRSTRLEN);
-		printf("Dst ip Address : %s\n\n", dstIP);	
+		printf("Destination Ip Address : %s\n\n", dstIP);	
 		
         //`	printf("Dst Address : %s\n", inet_ntoa(iph->ip_dst));
 	//	printf("ip source address : %s\n", inet_ntoa(iph->ip_src));
@@ -74,7 +75,7 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
 	printf("Destination Port : %d\n\n", ntohs(tcph->dest));
 
 	print_data(p+sizeof(struct ether_header)+sizeof(struct ip)+sizeof(struct tcphdr)+12);
-	printf("==========================================\n\n");
+	printf("==============================================================\n\n");
 }
 
 int main(int argc, char *argv[])
