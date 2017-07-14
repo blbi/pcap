@@ -64,11 +64,13 @@ int main(int argc, char *argv[])
 {
 	struct bpf_program fp;
 	pcap_t  *pcd;
+	bpf_u_int32 mask;      /* Our netmask */
+        bpf_u_int32 net; 
 	char filter_exp[]="port 80";
 
 	char errbuf[PCAP_ERRBUF_SIZE];
 	char *dev = pcap_lookupdev(errbuf);
-
+	pcap_lookupnet(dev, &net, &mask, errbuf); 
 	if ((pcd = pcap_open_live(dev, BUFSIZ, PROMISC, TIMEOUT, errbuf)) == NULL) {
         fprintf (stderr, "Device open failed\n");
         exit (1);
