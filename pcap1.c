@@ -19,16 +19,17 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
     
     	printf("===============packet info================\n");
 	
+	
 	printf("Length: %d\n\n", h->len);
     	printf("source mac address: ");
-    	for (i=0; i<ETH_ALEN-2; i++)
+    	for (i=0; i<ETH_ALEN-1; i++)
     	{
         	printf ("%02x:", eh->ether_shost[i]);
     	}
 	printf("%02x\n\n", eh->ether_shost[ETH_ALEN-1]);
    // printf (" -> ");
     	printf("destination mac address: ");
-    	for (i=0; i<ETH_ALEN-2; i++)
+    	for (i=0; i<ETH_ALEN-1; i++)
     	{
         	printf ("%02x:", eh->ether_dhost[i]);
     	}
@@ -60,6 +61,11 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
 	
 	printf("Source Port : %d\n\n", ntohs(tcph->source));
 	printf("Destination Port : %d\n\n", ntohs(tcph->dest));
+
+	printf("Data :\n");
+	int cnt=1;
+	
+	
 	printf("==========================================\n\n");
 }
 
@@ -74,13 +80,12 @@ int main(int argc, char *argv[])
         fprintf (stderr, "Device open failed\n");
         exit (1);
     	}
+	printf("Device: %s\n\n", dev);
     	if (pcap_loop(pcd, MAXCOUNT, print_addr, NULL) < 0) {
         fprintf (stderr, "Error in pcap_loop()\n");
         exit (1);
     	}
    	pcap_close (pcd);
-
-
-	 printf("Device: %s\n", dev);
-	 return(0);
+	
+	return(0);
 }
