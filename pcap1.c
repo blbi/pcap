@@ -19,14 +19,14 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
     
 	
     	printf("source mac address: ");
-    	for (i=0; i<ETH_ALEN-2; i++)
+    	for (i=0; i<ETH_ALEN-1; i++)
     	{
         	printf ("%02x:", eh->ether_shost[i]);
     	}
 	printf("%02x\n\n", eh->ether_shost[ETH_ALEN-1]);
    // printf (" -> ");
     	printf("destination mac address: ");
-    	for (i=0; i<ETH_ALEN-2; i++)
+    	for (i=0; i<ETH_ALEN-1; i++)
     	{
         	printf ("%02x:", eh->ether_dhost[i]);
     	}
