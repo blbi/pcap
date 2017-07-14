@@ -17,16 +17,18 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
     	int i;
     	struct ether_header *eh = (struct ether_header *)p;
     
+    	printf("===============packet info================\n");
 	
+	printf("Length: %d\n\n", h->len);
     	printf("source mac address: ");
-    	for (i=0; i<ETH_ALEN-1; i++)
+    	for (i=0; i<ETH_ALEN-2; i++)
     	{
         	printf ("%02x:", eh->ether_shost[i]);
     	}
 	printf("%02x\n\n", eh->ether_shost[ETH_ALEN-1]);
    // printf (" -> ");
     	printf("destination mac address: ");
-    	for (i=0; i<ETH_ALEN-1; i++)
+    	for (i=0; i<ETH_ALEN-2; i++)
     	{
         	printf ("%02x:", eh->ether_dhost[i]);
     	}
@@ -58,26 +60,20 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
 	
 	printf("Source Port : %d\n\n", ntohs(tcph->source));
 	printf("Destination Port : %d\n\n", ntohs(tcph->dest));
+	printf("==========================================\n\n");
 }
 
 int main(int argc, char *argv[])
 {
-	struct bpf_program fp;
 	pcap_t  *pcd;
-	bpf_u_int32 mask;      /* Our netmask */
-        bpf_u_int32 net; 
-	char filter_exp[]="port 80";
 
 	char errbuf[PCAP_ERRBUF_SIZE];
 	char *dev = pcap_lookupdev(errbuf);
-	pcap_lookupnet(dev, &net, &mask, errbuf); 
+
 	if ((pcd = pcap_open_live(dev, BUFSIZ, PROMISC, TIMEOUT, errbuf)) == NULL) {
         fprintf (stderr, "Device open failed\n");
         exit (1);
     	}
-	pcap_compile(pcd,&fp,filter_exp,0,net);
-	pcap_setfilter(pcd, &fp);
-
     	if (pcap_loop(pcd, MAXCOUNT, print_addr, NULL) < 0) {
         fprintf (stderr, "Error in pcap_loop()\n");
         exit (1);
