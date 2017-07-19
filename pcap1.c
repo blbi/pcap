@@ -32,7 +32,9 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
 
     	int i;
     	struct ether_header *eh = (struct ether_header *)p;
-    
+	    struct ip *iph = (struct ip *)(p+sizeof(struct ether_header));
+	    struct tcphdr *tcph = (struct tcphdr *)(p+sizeof(struct ether_header)+sizeof(struct ip));
+ if(eh->ether_type == 0x0008 && tcph->dest==0x5000 ){   
     	printf("========================packet info==========================\n\n");
 	
 	//length
@@ -56,7 +58,6 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
 	printf ("%02x\n\n", eh->ether_dhost[ETH_ALEN-1]);
 
 	//ip address
-	struct ip *iph = (struct ip *)(p+sizeof(struct ether_header));
 
 	char srcIP[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, &(iph->ip_src), srcIP, INET_ADDRSTRLEN);
@@ -67,7 +68,6 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
 	printf("Destination Ip Address : %s\n\n", dstIP);	
 	
 	//tcp port
-	struct tcphdr *tcph = (struct tcphdr *)(p+sizeof(struct ether_header)+sizeof(struct ip));
 	
 	printf("Source Port : %d\n\n", ntohs(tcph->source));
 	printf("Destination Port : %d\n\n", ntohs(tcph->dest));
@@ -77,7 +77,7 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
 	
 	printf("==============================================================\n\n");
 }
-
+}
 int main(int argc, char *argv[])
 {
 	pcap_t  *pcd;
