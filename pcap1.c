@@ -28,7 +28,7 @@ void print_data(const u_char *data){
 }
 
 //print source, destination mac, ip address, port
-void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p){
+void print_addr (const struct pcap_pkthdr *h, const u_char *p){
 
     	int i;
     	struct ether_header *eh = (struct ether_header *)p;
@@ -81,6 +81,8 @@ void print_addr (u_char *not_used, const struct pcap_pkthdr *h, const u_char *p)
 int main(int argc, char *argv[])
 {
 	pcap_t  *pcd;
+	struct pcap_pkthdr *header;
+	const u_char *pkt_data;
 
 	char errbuf[PCAP_ERRBUF_SIZE];
 	char *dev = pcap_lookupdev(errbuf);
@@ -92,10 +94,25 @@ int main(int argc, char *argv[])
 	printf("Device: %s\n\n", dev);
     	
 	//print
-	if (pcap_loop(pcd, MAXCOUNT, print_addr, NULL) < 0) {
-        	fprintf (stderr, "Error in pcap_loop()\n");
-        	exit (1);
-    	}
+
+	int res=0;
+	while((res=pcap_next_ex(pcd, &header, &pkt_data))>=0){
+		if (res==0) continue;
+		print_addr (header, pkt_data);
+		
+	}
+	if((res==-1)||(res==-2)){
+		printf("error\n");
+		return -1;
+	}
+	
+
+
+
+//	if (pcap_loop(pcd, MAXCOUNT, print_addr, NULL) < 0) {
+ //       	fprintf (stderr, "Error in pcap_loop()\n");
+  //      	exit (1);
+   // 	}
    	pcap_close (pcd);
 	
 	return(0);
